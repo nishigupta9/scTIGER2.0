@@ -102,9 +102,10 @@ The command with optional flags added (in any order) to adjust default parameter
 
 #### Example 
 # CHANGE EXAMPLE FOLDER NAME AND INFO IN HERE 
+# MENTION SOMEWHERE THAT WE HAVE A SEPARATE FOLDER CALLED SIG_GENE_NETWORKS (MAYBE RENAME?) WITH THE BACKGROUND REMOVED
+### just put the results for CEBPB, JUNB, and KLF6 in there
 To run scTIGER2.0 on the sample K562 dataset included in the Data folder, use the following command:
 ```
 ./run_scTIGER.py -goi AR+PTEN+ERG -ctrl ./Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 50 -top 100 -zero 0.15 -o SampleResult_ProstateCancer
 ```
-potential genes = TMSB10, S100A11
-maybe VIM if we can't find better ones
+potential genes = CEBPB, JUNB, KLF6
