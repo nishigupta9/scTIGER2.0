@@ -32,6 +32,79 @@ cd scTIGER2.0
 chmod +x run_scTIGER.py
 unzip Data/ProstateCancer/Patient4_Benign_endothelial.zip
 conda install pytorch==2.1.2 torchvision torchaudio cpuonly==2.0 -c pytorch
+```
+
+CUDA capable installation:
+```
+conda create -n scTIGER2.0 python=3.11
+conda activate scTIGER2.0
+git clone https://github.com/chenyongrowan/scTIGER2.0
+cd scTIGER2.0
+chmod +x run_scTIGER.py
+unzip Data/ProstateCancer/Patient4_Benign_endothelial.zip
+conda install pytorch==2.1.2 torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 conda install -c conda-forge bambi=0.15.0
 conda install -c conda-forge scanpy anndata
 ```
+
+### Input
+Required data: One or two scRNA-seq dataset(s) in the format of a non-normalized CSV file with genes in the first column of the file and cells in the remaining columns. 
+Required flags: 
+- -goi/--geneOfInterest: One or more genes of interest. Separate multiple genes with a "+" (ex. Arc+Bdnf)
+- -exp/--experimental: Path to the csv file containing the case cells. Provide file with cells as columns and genes as rows. The gene names should be the first column in the file. The file must contain at least 10 cells
+
+Optional Flags:
+- -p/--permutations: Number of permutations to run. Default 100
+- -top/--numTopGenes: Number of top correlated genes selected. Default 50
+- -zero/--zeroThresh: Threshold for number of 0's tolerated for a gene. Default 0.30
+- -t/--timesteps: Maximum number of steps allowed between interactions. 0 implies a direct, causal interaction. 1 implies one interaction between the source and target gene. Default is 0.
+- -s/--start: Starting point for scTIGER. Default 1 (Run scTIGER and and generate GRN files). 2 uses existing scTIGER output to generate GRN visualization files if you'd like to change the alpha level.
+- --cuda: CUDA use on when flag included. Leave flag out if using CPU based discovery
+- -o/--output: Output directory name. Default is 'scTIGER_Output'
+- -a/--alpha: Alpha value for determining significant gene interactions by scTIGER discovery. Default 0.05
+- -od/--override_downsample: Overrides selection of 200 cells. Default is false.
+- - -ctrl/--control: Path to the csv file containing control cells. Provide file with cells as columns and genes as rows. The gene names should be the first column in the file. The file must contain at least 10 cells. This flag activates scTIGER instead of scTIGER2.0 to use a co-differential expression network. 
+
+
+Notes: 
+If you choose to input two datasets (case and control), they should either be the same cell type and two different experimental conditions OR the same experimental condition and two different cell types. 
+Sample datasets are provided in the Data folder. There are multiple sample datasets under the Data folder. 
+1. The ProstateCancer folder contains datasets for one patient. The files were processed to contain only one cell type. They are also separated into benign and tumor cells.
+2. The RemoteMemoryFormation folder contains preprocessed datasets. Datasets contain only neurons. Only fear conditioned (FC) and controls were selected for the Chen2 dataset.
+3. The K562 folder contains a filtered dataset from the K562 cell line
+
+### Running
+The main folder of this repository contains three main files:
+1. run_scTIGER.py (script to run scTIGER and scTIGER2.0)
+2. scTIGER.py (definitions and functions used in run_scTIGER.py)
+3. 10x_preprocess.py (process 10x files into gene expression matrix for scTIGER)
+
+#### Preprocessing
+We included a file (10x_preprocess.py) to convert 10x sequencing files to the gene expression matrix scTIGER2.0 takes in. It has a required flag (-d/--directoryPath) that takes in the path to the directory with the following 10x sequencing output files:
+- features.tsv.gz
+- barcodes.tsv.gz
+- matrix.mtx.gz
+
+The escript will output the gene expression matrix to input into scTIGER2.0. The command to run this script should be in the following format:
+```
+./10x_preprocess.py -d ./Path_to_dir_with_10x_files
+```
+
+#### scTIGER2.0 
+scTIGER2.0 is set up as a single-line command using the flags defined in the input section of this page. If you are using one gene expression matrix, make sure to put the file path after the -exp flag and not the -ctrl flag. The command with required flags should be in the following format:
+```
+./run_scTIGER.py -goi Gene1+Gene2+Gene3 -exp ./path_to_file
+```
+The command with optional flags added (in any order) to adjust default parameters should be in the following format:
+```
+./run_scTIGER.py -goi Gene1+Gene2+Gene3 -ctrl ./path_to_file -exp ./path_to_file -p 50 -top 90 -zero 0.20 -t 1 --cuda -o NameOfDirectory_Output -s 2
+```
+
+#### Example 
+# CHANGE EXAMPLE FOLDER NAME AND INFO IN HERE 
+To run scTIGER2.0 on the sample K562 dataset included in the Data folder, use the following command:
+```
+./run_scTIGER.py -goi AR+PTEN+ERG -ctrl ./Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 50 -top 100 -zero 0.15 -o SampleResult_ProstateCancer
+```
+potential genes = TMSB10, S100A11
+maybe VIM if we can't find better ones
