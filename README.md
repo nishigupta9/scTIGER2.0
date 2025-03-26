@@ -103,6 +103,7 @@ The command with optional flags added (in any order) to adjust default parameter
 #### Example 
 # CHANGE EXAMPLE FOLDER NAME AND INFO IN HERE 
 # MENTION SOMEWHERE THAT WE HAVE A SEPARATE FOLDER CALLED SIG_GENE_NETWORKS (MAYBE RENAME?) WITH THE BACKGROUND REMOVED
+# MOVE 10X PROCESSING .PY FILE INTO SAME LOC AS SCTIGER.PY AND RUN_SCTIGER.PY
 ### just put the results for CEBPB, JUNB, and KLF6 in there
 To run scTIGER2.0 on the sample K562 dataset included in the Data folder, use the following command:
 ```
