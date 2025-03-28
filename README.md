@@ -109,4 +109,4 @@ To run scTIGER2.0 on the sample K562 dataset included in the Data folder, use th
 ```
 ./run_scTIGER.py -goi AR+PTEN+ERG -ctrl ./Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 50 -top 100 -zero 0.15 -o SampleResult_ProstateCancer
 ```
-potential genes = CEBPB, JUNB, KLF6
+running genes JUNB + STAT5B + ATF5
