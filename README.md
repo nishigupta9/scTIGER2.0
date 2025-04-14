@@ -63,7 +63,7 @@ Optional Flags:
 - -o/--output: Output directory name. Default is 'scTIGER_Output'
 - -a/--alpha: Alpha value for determining significant gene interactions by scTIGER discovery. Default 0.05
 - -od/--override_downsample: Overrides selection of 200 cells. Default is false.
-- - -ctrl/--control: Path to the csv file containing control cells. Provide file with cells as columns and genes as rows. The gene names should be the first column in the file. The file must contain at least 10 cells. This flag activates scTIGER instead of scTIGER2.0 to use a co-differential expression network. 
+- -ctrl/--control: Path to the csv file containing control cells. Provide file with cells as columns and genes as rows. The gene names should be the first column in the file. The file must contain at least 10 cells. This flag activates scTIGER instead of scTIGER2.0 to use a co-differential expression network. 
 
 
 Notes: 
@@ -103,8 +103,7 @@ The command with optional flags added (in any order) to adjust default parameter
 #### Example 
 # CHANGE EXAMPLE FOLDER NAME AND INFO IN HERE 
 # MENTION SOMEWHERE THAT WE HAVE A SEPARATE FOLDER CALLED SIG_GENE_NETWORKS (MAYBE RENAME?) WITH THE BACKGROUND REMOVED
-# MOVE 10X PROCESSING .PY FILE INTO SAME LOC AS SCTIGER.PY AND RUN_SCTIGER.PY
-### just put the results for CEBPB, JUNB, and KLF6 in there
+### just put the results for CEBPB, JUNB, and KLF6 in there ?
 To run scTIGER2.0 on the sample K562 dataset included in the Data folder, use the following command:
 ```
 ./run_scTIGER.py -goi AR+PTEN+ERG -ctrl ./Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 50 -top 100 -zero 0.15 -o SampleResult_ProstateCancer
