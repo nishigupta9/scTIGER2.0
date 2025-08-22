@@ -101,11 +101,14 @@ The command with optional flags added (in any order) to adjust default parameter
 ```
 
 #### Example 
-# CHANGE EXAMPLE FOLDER NAME AND INFO IN HERE 
-# MENTION SOMEWHERE THAT WE HAVE A SEPARATE FOLDER CALLED SIG_GENE_NETWORKS (MAYBE RENAME?) WITH THE BACKGROUND REMOVED
-### just put the results for CEBPB, JUNB, and KLF6 in there ?
 To run scTIGER2.0 on the sample K562 dataset included in the Data folder, use the following command:
 ```
-./run_scTIGER.py -goi AR+PTEN+ERG -ctrl ./Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 50 -top 100 -zero 0.15 -o SampleResult_ProstateCancer
+./run_scTIGER.py -goi JUNB+STAT5B+ATF5+HES1+MXD1 -exp ./Data/K562/K562.csv -p 100 -top 50 -zero 0.00 -o SampleResult_K562
 ```
-running genes JUNB + STAT5B + ATF5
+
+We have also included an Example folder which allows users to run the example dataset provided to make sure their download of scTIGER2.0 is functioning. To use it, simply download the scTIGER2.0 package, make the Example folder your working directory, and run ./Example/runExample.py in your terminal. It will output the SampleResult_K562 directory. The example does not run scTIGER2.0 with CUDA. (Be sure to unzip the data in the Example folder first).
+
+This directory contains sample output for scTIGER2.0. The main folder contains the raw counts of gene interactions detected using each entered gene of interest, a .txt file of command details with parameter values, as well as 3 directories. The sig_gene_networks directory contains filtered gene interaction files without background noise, keeping only interactions with enough counts to be deemed significant. The Graphs directory contains histograms displaying the number of interactions detected with a percentage recovery as the function of the percent recovery for each gene. The GRN_Visualization directory contains .graphml files for each gene of interest to be opened by a visualization software, such as Cytoscape.
+
+### Visualization
+scTIGER2.0 outputs .graphml files for each individual gene of interest as well as a merged overall interaction map to be uploaded to your visualization software (we used Cytoscape). We included a style file to use in Cytoscape that automatically adds directionality arrows and displays a T at the end of the arrow for downregulated interactions and an arrow for upregulated interactions. 
