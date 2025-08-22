@@ -19,8 +19,8 @@ Corresponding paper for scTIGER: Dautle M, Zhang S, Chen Y. scTIGER: A Deep-Lear
 - networkx
 - bambi
 - arviz
-- leidenalg??
-- numba??
+- leidenalg
+- numba
 
 ### Installation
 We recommend installing the packages using a conda environment. Information on downloading Anaconda can be found [here]([url](https://www.anaconda.com/download)). You can use the following steps to install the necessary python packages into a new environment. 
