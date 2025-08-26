@@ -113,5 +113,5 @@ This directory contains sample output for scTIGER2.0. The main folder contains t
 ### Visualization
 scTIGER2.0 outputs .graphml files for each individual gene of interest as well as a merged overall interaction map to be uploaded to your visualization software (we used Cytoscape). We included a style file to use in Cytoscape that automatically adds directionality arrows and displays a T at the end of the arrow for downregulated interactions and an arrow for upregulated interactions. 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/137c656b-4322-4e51-a645-782fe7f9f0c1" alt="My image" width="800" height="600"/>
+  <img src="https://github.com/user-attachments/assets/137c656b-4322-4e51-a645-782fe7f9f0c1" alt="My image" width="600" height="400"/>
 </p>
