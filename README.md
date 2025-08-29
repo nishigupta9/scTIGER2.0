@@ -30,7 +30,6 @@ conda activate scTIGER2.0
 git clone https://github.com/nishigupta9/scTIGER2.0.git
 cd scTIGER2.0
 chmod +x run_scTIGER.py
-unzip Data/ProstateCancer/Patient4_Benign_endothelial.zip
 conda install pytorch==2.1.2 torchvision torchaudio cpuonly==2.0 -c pytorch
 ```
 
@@ -41,7 +40,6 @@ conda activate scTIGER2.0
 git clone https://github.com/chenyongrowan/scTIGER2.0
 cd scTIGER2.0
 chmod +x run_scTIGER.py
-unzip Data/ProstateCancer/Patient4_Benign_endothelial.zip
 conda install pytorch==2.1.2 torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 conda install -c conda-forge bambi=0.15.0
 conda install -c conda-forge scanpy anndata
