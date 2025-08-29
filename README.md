@@ -33,6 +33,7 @@ chmod +x run_scTIGER.py
 conda install pytorch==2.1.2 torchvision torchaudio cpuonly==2.0 -c pytorch
 conda install -c conda-forge bambi=0.15.0
 conda install -c conda-forge scanpy anndata
+pip install "numpy<2"
 ```
 
 CUDA capable installation:
@@ -45,6 +46,7 @@ chmod +x run_scTIGER.py
 conda install pytorch==2.1.2 torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 conda install -c conda-forge bambi=0.15.0
 conda install -c conda-forge scanpy anndata
+pip install "numpy<2"
 ```
 
 ### Input
