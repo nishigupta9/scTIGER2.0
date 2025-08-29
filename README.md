@@ -27,7 +27,7 @@ We recommend installing the packages using a conda environment. Information on d
 ```
 conda create -n scTIGER2.0 python=3.11
 conda activate scTIGER2.0
-git clone https://github.com/chenyongrowan/scTIGER2.0
+git clone https://github.com/nishigupta9/scTIGER2.0.git
 cd scTIGER2.0
 chmod +x run_scTIGER.py
 unzip Data/ProstateCancer/Patient4_Benign_endothelial.zip
