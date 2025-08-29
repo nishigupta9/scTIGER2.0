@@ -30,7 +30,9 @@ conda activate scTIGER2.0
 git clone https://github.com/nishigupta9/scTIGER2.0.git
 cd scTIGER2.0
 chmod +x run_scTIGER.py
-conda install pytorch==2.1.2 torchvision torchaudio cpuonly==2.0 -c pytorch -c conda-forge bambi=0.15.0 -c conda-forge scanpy anndata
+conda install pytorch==2.1.2 torchvision torchaudio cpuonly==2.0 -c pytorch
+conda install -c conda-forge bambi=0.15.0
+conda install -c conda-forge scanpy anndata
 ```
 
 CUDA capable installation:
