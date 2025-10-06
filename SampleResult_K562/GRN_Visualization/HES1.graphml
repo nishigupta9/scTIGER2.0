@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d1" for="edge" attr.name="arrowShape" attr.type="string" />
+  <key id="d0" for="edge" attr.name="weight" attr.type="long" />
+  <graph edgedefault="undirected">
+    <node id="IER3" />
+    <node id="SGK1" />
+    <edge source="IER3" target="SGK1">
+      <data key="d0">60</data>
+      <data key="d1">delta</data>
+    </edge>
+  </graph>
+</graphml>

@@ -269,6 +269,9 @@ def scTIGER2(outDir, permutations, cellNumber, rawCase, zeroThresh, geneList, al
          
          #1. normalization + pseudotime
          case = normalize(case, zeroThresh) 
+         time_case = pseudotimeAssign(case)  
+         case_cellOrder = rankPseudotime(time_case) 
+         case = reorderCells(case, case_cellOrder) 
          
          #2. correlation
          case.reset_index(drop=True, inplace=True) 

@@ -40,8 +40,8 @@ if fileCheck == False:
     sys.exit("Experimental data file does not exist")
 caseW_data = pd.read_csv(args.exp, index_col = 0)
 
-if len(caseW_data) < 10: 
-   sys.exit("Too few cells in the experimental data file. Must be at least 10 cells.")
+#if len(caseW_data) < 10: 
+#   sys.exit("Too few cells in the experimental data file. Must be at least 10 cells.")
 
 #Select case downsample of 200 unless overridden argument provided
 if (args.override == True or len(caseW_data.columns) < 200): 

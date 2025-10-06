@@ -1,0 +1,9 @@
+# permutations: 100
+# top genes: 50
+Zero Threshold: 0.0
+Experimental file name: ./Sample_Data/K562/K562.csv
+Cuda use was on: False
+The maximum number of timesteps was: 0
+Alpha value was: 0.05
+Significance level (using negative binomial) was: 4.078947368421052
+Significance level (using average) was: 4.078947368421052

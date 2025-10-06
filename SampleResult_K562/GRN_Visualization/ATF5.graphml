@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d1" for="edge" attr.name="arrowShape" attr.type="string" />
+  <key id="d0" for="edge" attr.name="weight" attr.type="long" />
+  <graph edgedefault="undirected">
+    <node id="UBE2G1" />
+    <node id="AC112253.1" />
+    <node id="LINC01234" />
+    <node id="CXCL2" />
+    <node id="VEGFA" />
+    <node id="PLCG2" />
+    <node id="ATF5" />
+    <node id="SH3BGR" />
+    <node id="LGALS1" />
+    <edge source="UBE2G1" target="AC112253.1">
+      <data key="d0">18</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="AC112253.1" target="SH3BGR">
+      <data key="d0">5</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="AC112253.1" target="CXCL2">
+      <data key="d0">6</data>
+      <data key="d1">T</data>
+    </edge>
+    <edge source="LINC01234" target="CXCL2">
+      <data key="d0">14</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="CXCL2" target="ATF5">
+      <data key="d0">11</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="CXCL2" target="LGALS1">
+      <data key="d0">6</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="VEGFA" target="PLCG2">
+      <data key="d0">12</data>
+      <data key="d1">delta</data>
+    </edge>
+  </graph>
+</graphml>

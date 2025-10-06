@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d1" for="edge" attr.name="arrowShape" attr.type="string" />
+  <key id="d0" for="edge" attr.name="weight" attr.type="long" />
+  <graph edgedefault="undirected">
+    <node id="AC010273.2" />
+    <node id="Z82217.1" />
+    <node id="MXD1" />
+    <node id="ERVMER61-1" />
+    <node id="SYNC" />
+    <node id="GABRE" />
+    <node id="PHF5A" />
+    <node id="TOP2A" />
+    <edge source="AC010273.2" target="Z82217.1">
+      <data key="d0">33</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="AC010273.2" target="MXD1">
+      <data key="d0">12</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="AC010273.2" target="GABRE">
+      <data key="d0">6</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="Z82217.1" target="MXD1">
+      <data key="d0">24</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="MXD1" target="ERVMER61-1">
+      <data key="d0">8</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="ERVMER61-1" target="SYNC">
+      <data key="d0">6</data>
+      <data key="d1">delta</data>
+    </edge>
+    <edge source="ERVMER61-1" target="PHF5A">
+      <data key="d0">6</data>
+      <data key="d1">T</data>
+    </edge>
+    <edge source="ERVMER61-1" target="TOP2A">
+      <data key="d0">5</data>
+      <data key="d1">delta</data>
+    </edge>
+  </graph>
+</graphml>
