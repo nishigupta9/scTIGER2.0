@@ -108,7 +108,7 @@ To run scTIGER2.0 on the sample K562 dataset included in the Sample Data folder,
 ./run_scTIGER.py -goi JUNB+STAT5B+ATF5+HES1+MXD1 -exp ./Sample_Data/K562/K562.csv -p 100 -top 50 -zero 0.00 -o SampleResult_K562
 ```
 
-To run scTIGER on the sample Prostate Cancer benign (control) and tumor (case) endothelial cells in the Sample Data folder, use the following command:
+If a control dataset is available, it can be input into the program in addition to the case matrix to construct a differential expression matrix. For example, to run scTIGER on the sample Prostate Cancer benign (control) and tumor (case) endothelial cells in the Sample Data folder, use the following command:
 ```
 ./run_scTIGER.py -goi AR+PTEN+ERG -ctrl ./Sample_Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Sample_Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 100 -top 50 -zero 0.30 -o SampleResult_ProstateCancer
 ```
