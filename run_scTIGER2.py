@@ -11,7 +11,7 @@ import argparse
 import sys 
 import warnings 
 import pandas as pd
-import scTIGER as sd
+import scTIGER2 as sd
 import shutil
 
 warnings.simplefilter('ignore')
@@ -49,7 +49,7 @@ if (args.override == True or len(caseW_data.columns) < 200):
 else:
     caseW = caseW_data.sample(n=200, axis=1)
 
-#Select version of scTIGER
+#Select version of scTIGER2.0
 if (args.ctrl=="No"):
     version = 2.0
 else:
@@ -144,4 +144,4 @@ while args.start <= 3:
             args.start+=1
 
 shutil.rmtree('../../TCDF_Output')
-print('scTIGER finished.')
+print('scTIGER2.0 finished.')

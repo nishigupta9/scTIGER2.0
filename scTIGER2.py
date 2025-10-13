@@ -3,7 +3,7 @@
 """
 Nishi Gupta
 07.22.2024
-Definitions file for run_scTIGER.py
+Definitions file for run_scTIGER2.0.py
 """
 import numpy as np
 import pandas as pd
