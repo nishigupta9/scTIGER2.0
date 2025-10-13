@@ -10,17 +10,15 @@ Corresponding paper for scTIGER: Dautle M, Zhang S, Chen Y. scTIGER: A Deep-Lear
 - Pytorch
 - Optional: CUDA
 
-### Required Python Packages
-- numpy
-- pandas
-- matplotlib
-- scanpy
-- scipy
-- networkx
-- bambi
-- arviz
-- leidenalg
-- numba
+### Required Python Packages (recommended version)
+- numpy (1.26.4)
+- pandas (2.2.3)
+- matplotlib (3.10.0)
+- scipy (1.15.1)
+- networkx (3.4.2)
+- arviz (0.20.0)
+- leidenalg (0.9.1)
+- numba (0.61.0)
 
 ### Installation
 We recommend installing the packages using a conda environment. Information on downloading Anaconda can be found [here]([url](https://www.anaconda.com/download)). You can use the following steps to install the necessary python packages into a new environment. 
