@@ -27,7 +27,7 @@ conda create -n scTIGER2.0 python=3.11
 conda activate scTIGER2.0
 git clone https://github.com/nishigupta9/scTIGER2.0.git
 cd scTIGER2.0
-chmod +x run_scTIGER.py
+chmod +x run_scTIGER2.py
 conda install pytorch==2.1.2 torchvision torchaudio cpuonly==2.0 -c pytorch
 conda install -c conda-forge bambi=0.15.0
 conda install -c conda-forge scanpy anndata
@@ -40,7 +40,7 @@ conda create -n scTIGER2.0 python=3.11
 conda activate scTIGER2.0
 git clone https://github.com/chenyongrowan/scTIGER2.0
 cd scTIGER2.0
-chmod +x run_scTIGER.py
+chmod +x run_scTIGER2.py
 conda install pytorch==2.1.2 torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
 conda install -c conda-forge bambi=0.15.0
 conda install -c conda-forge scanpy anndata
@@ -75,8 +75,8 @@ Sample datasets are provided in the Data folder. There are multiple sample datas
 
 ### Running
 The main folder of this repository contains three main files:
-1. run_scTIGER.py (script to run scTIGER and scTIGER2.0)
-2. scTIGER.py (definitions and functions used in run_scTIGER.py)
+1. run_scTIGER2.py (script to run scTIGER and scTIGER2.0)
+2. scTIGER2.py (definitions and functions used in run_scTIGER2.py)
 3. 10x_preprocess.py (process 10x files into gene expression matrix for scTIGER)
 
 #### Preprocessing
@@ -93,22 +93,22 @@ The escript will output the gene expression matrix to input into scTIGER2.0. The
 #### scTIGER2.0 
 scTIGER2.0 is set up as a single-line command using the flags defined in the input section of this page. If you are using one gene expression matrix, make sure to put the file path after the -exp flag and not the -ctrl flag. The command with required flags should be in the following format:
 ```
-./run_scTIGER.py -goi Gene1+Gene2+Gene3 -exp ./path_to_file
+./run_scTIGER2.py -goi Gene1+Gene2+Gene3 -exp ./path_to_file
 ```
 The command with optional flags added (in any order) to adjust default parameters should be in the following format:
 ```
-./run_scTIGER.py -goi Gene1+Gene2+Gene3 -ctrl ./path_to_file -exp ./path_to_file -p 50 -top 90 -zero 0.20 -t 1 --cuda -o NameOfDirectory_Output -s 2
+./run_scTIGER2.py -goi Gene1+Gene2+Gene3 -ctrl ./path_to_file -exp ./path_to_file -p 50 -top 90 -zero 0.20 -t 1 --cuda -o NameOfDirectory_Output -s 2
 ```
 
 #### Example 
 To run scTIGER2.0 on the sample K562 dataset included in the Sample Data folder, use the following command:
 ```
-./run_scTIGER.py -goi JUNB+STAT5B+ATF5+HES1+MXD1 -exp ./Sample_Data/K562/K562.csv -p 100 -top 50 -zero 0.00 -o SampleResult_K562
+./run_scTIGER2.py -goi JUNB+STAT5B+ATF5+HES1+MXD1 -exp ./Sample_Data/K562/K562.csv -p 100 -top 50 -zero 0.00 -o SampleResult_K562
 ```
 
 If a control dataset is available, it can be input into the program in addition to the case matrix to construct a differential expression matrix. For example, to run scTIGER on the sample Prostate Cancer benign (control) and tumor (case) endothelial cells in the Sample Data folder, use the following command:
 ```
-./run_scTIGER.py -goi AR+PTEN+ERG -ctrl ./Sample_Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Sample_Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 100 -top 50 -zero 0.30 -o SampleResult_ProstateCancer
+./run_scTIGER2.py -goi AR+PTEN+ERG -ctrl ./Sample_Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Sample_Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 100 -top 50 -zero 0.30 -o SampleResult_ProstateCancer
 ```
 
 We have also included an Example folder which allows users to run the example K562 cell line dataset provided to make sure their download of scTIGER2.0 is functioning. To use it, simply download the scTIGER2.0 package, make sure you are working in the scTIGER2.0 directory, change permissions to make the file executable (chmod +x runExample.py) and run ./runExample.py in your terminal. It will output the SampleResult_K562 directory using the provided data from the K562 cell line. The example does not run scTIGER2.0 with CUDA.
