@@ -1,8 +1,6 @@
 # scTIGER2.0 (Single-cell Temporal Inference of Gene Regulatory Networks 2.0)
 Single-cell Temporal Inference of Gene Regulatory 2.0 (scTIGER2.0) Networks is an extension of scTIGER, a computational method of predicting gene regulatory networks (GRNs) that uses paired datasets of case versus control experiments. scTIGER2.0 can accept paired datasets and single case or control experiments to predict GRNs. scTIGER2.0 also selects a downsample of 200 cells from input dataset unless an override argument is provided -- a feature that is not present in the original program. After building a gene co-differential expression network, scTIGER2.0 combines cell-based pseudotiming, an attention-based convolutional neural network, and permutation-based significance testing to infer GRNs) among gene modules.
 
-Corresponding paper for scTIGER: Dautle M, Zhang S, Chen Y. scTIGER: A Deep-Learning Method for Inferring Gene Regulatory Networks from Case versus Control scRNA-seq Datasets. International Journal of Molecular Sciences. 2023; 24(17):13339. https://doi.org/10.3390/ijms241713339
-
 ## Prerequisites 
 ### General
 - Linux
@@ -120,3 +118,6 @@ scTIGER2.0 outputs .graphml files for each individual gene of interest as well a
 <p align="center">
   <img src="https://github.com/user-attachments/assets/137c656b-4322-4e51-a645-782fe7f9f0c1" alt="My image" width="600" height="400"/>
 </p>
+
+### Citation
+Corresponding paper for scTIGER: Dautle M, Zhang S, Chen Y. scTIGER: A Deep-Learning Method for Inferring Gene Regulatory Networks from Case versus Control scRNA-seq Datasets. International Journal of Molecular Sciences. 2023; 24(17):13339. https://doi.org/10.3390/ijms241713339
