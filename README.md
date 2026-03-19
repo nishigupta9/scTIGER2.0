@@ -99,16 +99,16 @@ scTIGER2.0 is set up as a single-line command using the flags defined in the inp
 ```
 The command with optional flags added (in any order) to adjust default parameters should be in the following format:
 ```
-./run_scTIGER2.py
-  -goi Gene1+Gene2+Gene3
-  -ctrl ./path_to_file
-  -exp ./path_to_file
-  -p 50
-  -top 90
-  -zero 0.20
-  -t 1
-  --cuda
-  -o NameOfDirectory_Output
+./run_scTIGER2.py \
+  -goi Gene1+Gene2+Gene3 \
+  -ctrl ./path_to_file \
+  -exp ./path_to_file \
+  -p 50 \
+  -top 90 \
+  -zero 0.20 \
+  -t 1 \
+  --cuda \
+  -o NameOfDirectory_Output \
   -s 2
 ```
 
