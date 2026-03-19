@@ -50,8 +50,9 @@ def train(epoch, traindata, traintarget, modelname, optimizer,log_interval,epoch
 
     return attentionscores.data, loss
 
-def findcauses(target, cuda, epochs, kernel_size, layers, 
-               log_interval, lr, optimizername, seed, dilation_c, significance, file):
+def findcauses(target, cuda, epochs, kernel_size, layers,
+               log_interval, lr, optimizername, seed, dilation_c,
+               significance, file, no_validation=False):
     """Discovers potential causes of one target time series, validates these potential causes with PIVM and discovers the corresponding time delays"""
 
     #print("\n", "Analysis started for target: ", target)
@@ -112,25 +113,25 @@ def findcauses(target, cuda, epochs, kernel_size, layers,
         potentials = indices[:ind+1].tolist()
     #print("Potential causes: ", potentials)
     validated = copy.deepcopy(potentials)
-    
-    #Apply PIVM (permutes the values) to check if potential cause is true cause
-    for idx in potentials:
-        random.seed(seed)
-        X_test2 = X_train.clone().cpu().numpy()
-        random.shuffle(X_test2[:,idx,:][0])
-        shuffled = torch.from_numpy(X_test2)
-        if cuda:
-            shuffled=shuffled.cuda()
-        model.eval()
-        output = model(shuffled)
-        testloss = F.mse_loss(output, Y_train)
-        testloss = testloss.cpu().data.item()
-        
-        diff = firstloss-realloss
-        testdiff = firstloss-testloss
 
-        if testdiff>(diff*significance): 
-            validated.remove(idx) 
+    if not no_validation:
+        for idx in potentials:
+            random.seed(seed)
+            X_test2 = X_train.clone().cpu().numpy()
+            random.shuffle(X_test2[:, idx, :][0])
+            shuffled = torch.from_numpy(X_test2)
+            if cuda:
+                shuffled = shuffled.cuda()
+            model.eval()
+            output = model(shuffled)
+            testloss = F.mse_loss(output, Y_train)
+            testloss = testloss.cpu().data.item()
+
+            diff = firstloss - realloss
+            testdiff = firstloss - testloss
+
+            if testdiff > (diff * significance):
+                validated.remove(idx)
     
  
     weights = []

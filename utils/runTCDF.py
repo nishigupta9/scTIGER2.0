@@ -198,10 +198,21 @@ def runTCDF(datafile):
     columns = list(df_data)
     for c in columns:
         idx = df_data.columns.get_loc(c)
-        causes, causeswithdelay, realloss, scores = TCDF.findcauses(c, cuda=cuda, epochs=nrepochs, 
-        kernel_size=kernel_size, layers=levels, log_interval=loginterval, 
-        lr=learningrate, optimizername=optimizername,
-        seed=seed, dilation_c=dilation_c, significance=significance, file=datafile)
+        causes, causeswithdelay, realloss, scores = TCDF.findcauses(
+            c,
+            cuda=cuda,
+            epochs=nrepochs,
+            kernel_size=kernel_size,
+            layers=levels,
+            log_interval=loginterval,
+            lr=learningrate,
+            optimizername=optimizername,
+            seed=seed,
+            dilation_c=dilation_c,
+            significance=significance,
+            file=datafile,
+            no_validation=args.no_validation
+        )
 
         allscores[idx]=scores
         allcauses[idx]=causes
@@ -299,6 +310,8 @@ parser.add_argument('--seed', type=check_positive, default=1111, help='Random se
 parser.add_argument('--dilation_coefficient', type=check_positive, default=4, help='Dilation coefficient, recommended to be equal to kernel size (default: 4)')
 parser.add_argument('--significance', type=float, default=0.8, help="Significance number stating when an increase in loss is significant enough to label a potential cause as true (validated) cause. See paper for more details (default: 0.8)")
 parser.add_argument('--plot', action="store_true", default=False, help='Show causal graph (default: False)')
+parser.add_argument('--no_validation', action='store_true', default=False,
+                    help='Skip causal validation (PIVM) and keep all potential causes')
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('--ground_truth',action=StoreDictKeyPair, help='Provide dataset(s) and the ground truth(s) to evaluate the results of TCDF. Argument format: DataFile1=GroundtruthFile1,Key2=Value2,... with a key for each dataset containing multivariate time series (required file format: csv, a column with header for each time series) and a value for the corresponding ground truth (required file format: csv, no header, index of cause in first column, index of effect in second column, time delay between cause and effect in third column)')
 group.add_argument('--data', nargs='+', help='(Path to) one or more datasets to analyse by TCDF containing multiple time series. Required file format: csv with a column (incl. header) for each time series')
