@@ -152,8 +152,6 @@ scTIGER2.0 outputs .graphml files for each individual gene of interest as well a
 
 ## Citations
 Please cite the corresponding papers if you use scTIGER2 in your work. 
-1. scTIGER
-   Dautle M, Zhang S, Chen Y. scTIGER: A Deep-Learning Method for Inferring Gene Regulatory Networks from Case versus Control scRNA-seq Datasets. International Journal of Molecular Sciences. 2023; 24(17):13339. [https://doi.org/10.3390/ijms241713339](https://doi.org/10.3390/ijms241713339)
-3. scTIGER2
-   Gupta N, Dautle M, Zhang S, Chen Y. A Robust Deep Temporal Causal Discovery Platform for Single-Cell Gene Regulatory Network Reconstruction (Under Review)
+1. Dautle M, Zhang S, Chen Y. scTIGER: A Deep-Learning Method for Inferring Gene Regulatory Networks from Case versus Control scRNA-seq Datasets. International Journal of Molecular Sciences. 2023; 24(17):13339. [https://doi.org/10.3390/ijms241713339](https://doi.org/10.3390/ijms241713339)
+2. Gupta N, Dautle M, Zhang S, Chen Y. A Robust Deep Temporal Causal Discovery Platform for Single-Cell Gene Regulatory Network Reconstruction (Under Review)
 
