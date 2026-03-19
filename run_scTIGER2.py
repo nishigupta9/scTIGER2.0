@@ -4,6 +4,11 @@
 Nishi Gupta
 07.22.2024
 scTIGER2.0 - Single-cell, Temporal Inference of Gene Regulatory Networks v. 2.0
+
+Updates list:
+03.13.2026 - Madison Dautle | Added a flag for removing causal validation step in TCDF
+03.13.2026 - Madison Dautle | Added a flag to change which pseudotime method is employed by scTIGER2.0
+03.17.2026 - Madison Dautle | Added program runtime reporting
 """
 #%% Setup
 import os
@@ -13,9 +18,13 @@ import warnings
 import pandas as pd
 import scTIGER2 as sd
 import shutil
+import time
+
 
 warnings.simplefilter('ignore')
 os.environ['KMP_WARNINGS'] = 'off'
+
+whole_program_start = time.time()
 
 parser = argparse.ArgumentParser()
 #Flags 
@@ -30,7 +39,9 @@ parser.add_argument("-exp", "--experimental",dest ="exp", help="Case/experimenta
 parser.add_argument("--cuda", dest = 'cuda', action = 'store_true', help="CUDA use on. Default is off.")
 parser.add_argument("-o", "--output", dest = 'outputDir', default = 'scTIGER_Output', help ="Output directory name. Default is 'scTIGER_Output", type=str)
 parser.add_argument("-a", "--alpha", dest = 'alpha', default = 0.05, help='Alpha value to determine significiant interactions threshold. Default 0.05', type=float)
-parser.add_argument("-od", "--override_downsample", dest="override", action = "store_true", help="Overriding downsample of 200 cells.")
+parser.add_argument("-od", "--overrideDownsample", dest="override", action = "store_true", help="Overriding downsample of 200 cells.")
+parser.add_argument("-nV", "--noValidation", dest="noValidation", action = "store_true", help = "Remove causal validation step in TCDF.")
+parser.add_argument("-pt", "--pseudotime", dest="pseudotime", default="paga", choices=['paga','dpt','palantir','scfates','slingshot','monocle3'], help='Pseudotime method used for cell ordering with scTIGER2.0. Default is dpt.') 
 args = parser.parse_args()
 
 #%%arg check 
@@ -102,7 +113,7 @@ os.mkdir('./TCDF_Output')
 while args.start <= 3:
     if version == 1.0:
         if args.start == 1: 
-            hold = sd.scTIGER(args.outputDir, args.runs, n, caseW, ctrlW, args.zeroThresh, geneList, allInteractions, args.topGenes, args.cuda, args.timeDelay)
+            hold = sd.scTIGER(args.outputDir, args.runs, n, caseW, ctrlW, args.zeroThresh, geneList, allInteractions, args.topGenes, args.cuda, args.timeDelay, args.noValidation, args.pseudotime)
             os.system("touch commandDetails.txt") 
             with open('commandDetails.txt', 'a') as file:
                 l1 = "# permutations: " + str(args.runs)
@@ -122,7 +133,7 @@ while args.start <= 3:
             args.start+=1
     elif version == 2.0:
         if args.start == 1: 
-            hold = sd.scTIGER2(args.outputDir, args.runs, n, caseW, args.zeroThresh, geneList, allInteractions, args.topGenes, args.cuda, args.timeDelay)
+            hold = sd.scTIGER2(args.outputDir, args.runs, n, caseW, args.zeroThresh, geneList, allInteractions, args.topGenes, args.cuda, args.timeDelay, args.noValidation, args.pseudotime)
             os.system("touch commandDetails.txt")
             with open('commandDetails.txt', 'a') as file:
                 l1 = "# permutations: " + str(args.runs)
@@ -132,7 +143,9 @@ while args.start <= 3:
                 l5 = "\nCuda use was on: " + str(args.cuda)
                 l6 = "\nThe maximum number of timesteps was: " + str(args.timeDelay)
                 l7 = "\nAlpha value was: " + str(args.alpha)
-                file.writelines([l1, l2, l3, l4, l5, l6, l7])
+                l8 = "\nPseudotime method was: " + str(args.pseudotime)
+                l9 = "\nCausal validation was on: " + str(args.noValidation)
+                file.writelines([l1, l2, l3, l4, l5, l6, l7, l8, l9])
             args.start+=1
         elif args.start == 2:
             sig_nb, sig_avg = sd.GRAPH(args.outputDir, geneList, args.runs, args.timeDelay, args.alpha, hold)
@@ -142,6 +155,13 @@ while args.start <= 3:
             args.start+=1
         else:
             args.start+=1
+
+whole_program_end = time.time()
+program_runtime = whole_program_end - whole_program_start
+avg_time_per_permutation = program_runtime/args.runs
+with open('../commandDetails.txt', 'a') as file:
+    file.write("\n\nTotal program runtime was: " + str(program_runtime))
+    file.write("\nAverage runtime per permutation was: " + str(avg_time_per_permutation))
 
 shutil.rmtree('../../TCDF_Output')
 print('scTIGER2.0 finished.')

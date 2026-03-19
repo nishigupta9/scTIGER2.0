@@ -4,6 +4,10 @@
 Nishi Gupta
 07.22.2024
 Definitions file for run_scTIGER2.0.py
+
+Updates list:
+03.13.2026 - Madison Dautle | Added a flag for the causal validation step in TCDF
+03.13.2026 - Madison Dautle | Updated pseudotime methods 
 """
 import numpy as np
 import pandas as pd
@@ -37,31 +41,229 @@ def normalize(df, zeroThresh):
     return norm_df
 
 
-def pseudotimeAssign(norm_df):
-    adata = sc.AnnData(norm_df, dtype = np.float64)
-    X = adata.X
-    X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
-    adata.X = X
+
+
+def make_adata(norm_df):
+    adata = sc.AnnData(norm_df.copy(), dtype=np.float64)
+    adata.X = np.nan_to_num(adata.X, nan=0.0, posinf=0.0, neginf=0.0)
+
+    # basic preprocessing shared by several methods
     sc.tl.pca(adata)
     sc.pp.neighbors(adata)
-    sc.tl.leiden(adata, resolution = 1.0)
-    sc.tl.paga(adata, groups = 'leiden')
-    df_res = adata.obs['leiden'].to_frame()
-    return df_res
+    return adata
 
+def rank_pseudotime(time_df, col):
+    time_df = time_df.copy()
+    time_df["Rank"] = time_df[col].rank(method="first")
+    time_df = time_df.sort_values(by="Rank")
+    return list(time_df.index)
 
-def rankPseudotime(time_df):
-    time_df['Rank'] = time_df['leiden'].rank(method = 'first')
-    time_df = time_df.sort_values(by = ['Rank'])
-    cell_order = list(time_df.index)
-    return cell_order
-
-
-def reorderCells(df, cellOrderList): 
+def reorder_cells(df, cell_order_list):
     df = df.T
-    df = df[cellOrderList]
+    df = df[cell_order_list]
     df = df.T
     return df
+    
+def pseudotime_paga(norm_df):
+    adata = sc.AnnData(norm_df.copy(), dtype=np.float64)
+    adata.X = np.nan_to_num(adata.X, nan=0.0, posinf=0.0, neginf=0.0)
+
+    sc.tl.pca(adata)
+    sc.pp.neighbors(adata)
+    sc.tl.leiden(adata, resolution=1.0)
+    sc.tl.paga(adata, groups='leiden')
+
+    df_res = adata.obs[['leiden']].copy()
+    df_res['pseudotime'] = df_res['leiden'].rank(method='first')
+    return df_res[['pseudotime']]
+
+def pseudotime_dpt(norm_df, root_cell=None):
+    adata = make_adata(norm_df)
+
+    # DPT uses diffusion maps
+    sc.tl.diffmap(adata)
+
+    # pick a root cell index
+    if root_cell is None:
+        root_cell = adata.obs_names[0]
+
+    # Scanpy wants integer index in adata.uns['iroot']
+    adata.uns["iroot"] = np.where(adata.obs_names == root_cell)[0][0]
+
+    sc.tl.dpt(adata)
+
+    df_res = adata.obs[["dpt_pseudotime"]].copy()
+    df_res.columns = ["pseudotime"]
+    return df_res
+      
+def pseudotime_palantir(norm_df, root_cell=None):
+    import palantir
+
+    adata = make_adata(norm_df)
+
+    # Palantir commonly works from PCA / diffusion representation
+    pca_projections = pd.DataFrame(
+        adata.obsm["X_pca"],
+        index=adata.obs_names
+    )
+
+    dm_res = palantir.utils.run_diffusion_maps(pca_projections)
+    ms_data = palantir.utils.determine_multiscale_space(dm_res)
+
+    if root_cell is None:
+        root_cell = adata.obs_names[0]
+
+    pr_res = palantir.core.run_palantir(ms_data, early_cell=root_cell)
+
+    df_res = pd.DataFrame(index=adata.obs_names)
+    df_res["pseudotime"] = pr_res.pseudotime
+    return df_res
+     
+def pseudotime_scfates(norm_df, root_cell=None):
+    import numpy as np
+    import pandas as pd
+    import scanpy as sc
+    import scFates as scf
+
+    adata = sc.AnnData(norm_df.copy(), dtype=np.float64)
+    adata.X = np.nan_to_num(adata.X, nan=0.0, posinf=0.0, neginf=0.0)
+
+    sc.tl.pca(adata)
+    sc.pp.neighbors(adata)
+
+    # build tree on PCA space
+    scf.tl.tree(adata, method="ppt", Nodes=50, use_rep="X_pca")
+
+    # REQUIRED: define a root before pseudotime
+    # simplest option: use a cell index
+    if root_cell is None:
+        root_cell = adata.obs_names[0]
+
+    root_idx = np.where(adata.obs_names == root_cell)[0][0]
+    scf.tl.root(adata, root=root_idx)
+
+    # now pseudotime can be computed
+    scf.tl.pseudotime(adata)
+
+    # scFates writes pseudotime to adata.obs["t"]
+    df_res = adata.obs[["t"]].copy()
+    df_res.columns = ["pseudotime"]
+    return df_res
+    
+def pseudotime_slingshot(norm_df, root_cell=None, root_cluster=None):
+    import numpy as np
+    import pandas as pd
+    import scanpy as sc
+    from pyslingshot import Slingshot
+
+    adata = sc.AnnData(norm_df.copy(), dtype=np.float64)
+    adata.X = np.nan_to_num(adata.X, nan=0.0, posinf=0.0, neginf=0.0)
+
+    sc.tl.pca(adata)
+    sc.pp.neighbors(adata)
+    sc.tl.leiden(adata, resolution=1.0)
+
+    # reduced coordinates
+    coords = adata.obsm["X_pca"][:, :2]
+
+    # original cluster labels as strings
+    clusters = adata.obs["leiden"].astype(str)
+
+    # choose root cluster label
+    if root_cluster is None:
+        if root_cell is not None and root_cell in adata.obs_names:
+            root_cluster = clusters.loc[root_cell]
+        else:
+            root_cluster = clusters.iloc[0]
+
+    # one-hot encode clusters
+    cluster_onehot_df = pd.get_dummies(clusters)
+    cluster_onehot = cluster_onehot_df.to_numpy()
+
+    # map root cluster label -> integer column index
+    cluster_names = list(cluster_onehot_df.columns)
+    if root_cluster not in cluster_names:
+        raise ValueError(
+            f"Root cluster {root_cluster} not found in cluster names {cluster_names}"
+        )
+    start_node = cluster_names.index(root_cluster)
+
+    sling = Slingshot(
+        coords,
+        cluster_onehot,
+        start_node=start_node
+    )
+
+    sling.fit()
+
+    df_res = pd.DataFrame(index=adata.obs_names)
+
+    if hasattr(sling, "pseudotime"):
+        pt = sling.pseudotime
+    elif hasattr(sling, "unified_pseudotime"):
+        pt = sling.unified_pseudotime
+    else:
+        print("Available Slingshot attributes:", dir(sling))
+        raise ValueError("Could not find pseudotime output in Slingshot object.")
+
+    df_res["pseudotime"] = np.asarray(pt).ravel()
+    return df_res
+    
+def pseudotime_monocle3(norm_df, root_cell=None):
+    import numpy as np
+    import pandas as pd
+    import scanpy as sc
+    import py_monocle
+
+    adata = sc.AnnData(norm_df.copy(), dtype=np.float64)
+    adata.X = np.nan_to_num(adata.X, nan=0.0, posinf=0.0, neginf=0.0)
+
+    sc.tl.pca(adata)
+    sc.pp.neighbors(adata)
+    sc.tl.umap(adata)
+    sc.tl.leiden(adata, resolution=1.0)
+
+    matrix = np.asarray(adata.obsm["X_umap"])
+
+    if root_cell is None:
+        root_idx = 0
+    else:
+        matches = np.where(adata.obs_names == root_cell)[0]
+        if len(matches) == 0:
+            raise ValueError(f"Root cell {root_cell} not found in adata.obs_names")
+        root_idx = int(matches[0])
+
+    clusters = adata.obs["leiden"].astype("category").cat.codes.to_numpy()
+
+    pt = py_monocle.pseudotime(
+        matrix,
+        root_cells=root_idx,
+        clusters=clusters
+    )
+
+    df_res = pd.DataFrame(index=adata.obs_names)
+    df_res["pseudotime"] = np.asarray(pt).ravel()
+    return df_res
+  
+def get_pseudotime(norm_df, method="PAGA", root_cell=None, root_cluster=None):
+    method = method.lower()
+
+    if method == "paga":
+        return pseudotime_paga(norm_df)
+    elif method == "dpt":
+        return pseudotime_dpt(norm_df, root_cell=root_cell)
+    elif method == "palantir":
+        return pseudotime_palantir(norm_df, root_cell=root_cell)
+    elif method == "scfates":
+        return pseudotime_scfates(norm_df, root_cell=root_cell)
+    elif method == "slingshot":
+        return pseudotime_slingshot(norm_df, root_cell=root_cell, root_cluster=root_cluster)
+    elif method == "monocle3":
+        return pseudotime_monocle3(norm_df, root_cell=root_cell)
+    else:
+        raise ValueError(f"Unsupported method: {method}")
+
+
 
 
 def pearson_corr(normCD):
@@ -72,7 +274,7 @@ def pearson_corr(normCD):
     return result
 
 
-def predict_GRN(geneList, corrResult, numTopRanked, normCD, cudaUse,timeDelay):
+def predict_GRN(geneList, corrResult, numTopRanked, normCD, cudaUse, timeDelay, noValidation):
     tcdfInput = "./TCDF_Output/inputTemp.csv"
     tcdfOutput= "./TCDF_Output/outputTemp.csv"
     allInteractions = pd.DataFrame(columns = geneList)
@@ -88,10 +290,14 @@ def predict_GRN(geneList, corrResult, numTopRanked, normCD, cudaUse,timeDelay):
         geneMatrix = geneMatrix.replace(np.nan, 0)
         geneMatrix.to_csv(tcdfInput, index=False)
         os.environ['MKL_THREADING_LAYER'] = 'GNU'
-        if cudaUse == True:
+        if cudaUse == True and noValidation == False:
             command = 'python ./utils/runTCDF.py --data ' + tcdfInput + ' --cuda > ./TCDF_Output/tcdfRunning.txt'
+        elif cudaUse == True and noValidation == True:
+            command = 'python ./utils/runTCDF.py --data ' + tcdfInput + ' --cuda --no_validation > ./TCDF_Output/tcdfRunning.txt'
+        elif cudaUse == False and noValidation == True: 
+            command = 'python ./utils/runTCDF.py --data ' + tcdfInput + ' --no_validation > ./TCDF_Output/tcdfRunning.txt'
         else:
-            command = 'python ./utils/runTCDF.py --data ' + tcdfInput + ' > ./TCDF_Output/tcdfRunning.txt'
+             command = 'python ./utils/runTCDF.py --data ' + tcdfInput + ' > ./TCDF_Output/tcdfRunning.txt'
         os.system(command)
         TCDFRes = pd.read_csv(tcdfOutput)
         interactionsPP = pd.concat([interactionsPP, TCDFRes], ignore_index=True)
@@ -163,7 +369,6 @@ def calSigLvl(bg_df, gene, alpha_val): #Significance level calculated using nega
         sig_lvl = bg_df.loc[:, gene].mean() 
     return sig_lvl
 
-
 def calSigLvl_avg(bg_df, gene, alpha_val): #Significance level calculated using mean of frequencies
     bgAppCts = bg_df[gene].value_counts().sort_index()
     bgAppCts = bgAppCts.to_frame()
@@ -171,10 +376,11 @@ def calSigLvl_avg(bg_df, gene, alpha_val): #Significance level calculated using 
     sig_lvl = bg_df.loc[:, gene].mean() 
     return sig_lvl
 
-
 def removeBackground(actual_df, sig_val, gene): 
     actual_noNoise = actual_df[actual_df[gene] >= sig_val]
     return actual_noNoise
+
+
 
 
 def graphGRN(actual_df, gene, timeDelay): 
@@ -205,7 +411,10 @@ def graphGRN(actual_df, gene, timeDelay):
     return actual_df 
 
 
-def scTIGER(outDir, permutations, cellNumber, rawCase, rawCtrl, zeroThresh, geneList, allInteractions, topGenes, cudaUse, timeDelay):
+
+
+
+def scTIGER(outDir, permutations, cellNumber, rawCase, rawCtrl, zeroThresh, geneList, allInteractions, topGenes, cudaUse, timeDelay, noValidation, pseudotime):
     os.mkdir(outDir)
     for i in range(permutations):
         start = time.time()
@@ -216,16 +425,16 @@ def scTIGER(outDir, permutations, cellNumber, rawCase, rawCtrl, zeroThresh, gene
         
         
         # 1. normalization + pseudotime
-        case = normalize(case, zeroThresh) 
-        ctrl = normalize(ctrl, zeroThresh) 
-        time_case = pseudotimeAssign(case)  
-        time_ctrl = pseudotimeAssign(ctrl) 
-        case_cellOrder = rankPseudotime(time_case) 
-        ctrl_cellOrder = rankPseudotime(time_ctrl) 
-        case = reorderCells(case, case_cellOrder) 
-        ctrl = reorderCells(ctrl, ctrl_cellOrder) 
-        
-        
+        case = normalize(case, zeroThresh)
+        ctrl = normalize(ctrl, zeroThresh)
+        time_case = get_pseudotime(case, method=pseudotime, root_cell=case.index[0])
+        time_ctrl = get_pseudotime(ctrl, method=pseudotime, root_cell=ctrl.index[0]) 
+        case_cellOrder = rank_pseudotime(time_case, "pseudotime")
+        ctrl_cellOrder = rank_pseudotime(time_ctrl, "pseudotime")
+        case = reorder_cells(case, case_cellOrder)
+        ctrl = reorder_cells(ctrl, ctrl_cellOrder)
+
+
         # 2. difference matrix
         case.reset_index(drop=True, inplace=True) 
         ctrl.reset_index(drop=True, inplace=True)
@@ -242,7 +451,7 @@ def scTIGER(outDir, permutations, cellNumber, rawCase, rawCtrl, zeroThresh, gene
         
         
         # 4. Detect gene interactions
-        interactions = predict_GRN(geneList, corr, topGenes, caseMctrl, cudaUse, timeDelay)
+        interactions = predict_GRN(geneList, corr, topGenes, caseMctrl, cudaUse, timeDelay, noValidation)
         allInteractions = pd.concat([allInteractions, interactions], ignore_index=True)
         del(interactions) 
 
@@ -260,7 +469,9 @@ def scTIGER(outDir, permutations, cellNumber, rawCase, rawCtrl, zeroThresh, gene
     return hold
 
 
-def scTIGER2(outDir, permutations, cellNumber, rawCase, zeroThresh, geneList, allInteractions, topGenes, cudaUse, timeDelay):
+
+
+def scTIGER2(outDir, permutations, cellNumber, rawCase, zeroThresh, geneList, allInteractions, topGenes, cudaUse, timeDelay, noValidation, pseudotime):
      os.mkdir(outDir)
      for i in range(permutations):
          start = time.time()
@@ -268,11 +479,11 @@ def scTIGER2(outDir, permutations, cellNumber, rawCase, zeroThresh, geneList, al
          case=case.T
          
          #1. normalization + pseudotime
-         case = normalize(case, zeroThresh) 
-         time_case = pseudotimeAssign(case)  
-         case_cellOrder = rankPseudotime(time_case) 
-         case = reorderCells(case, case_cellOrder) 
-         
+         case = normalize(case, zeroThresh)
+         time_case = get_pseudotime(case, method=pseudotime, root_cell=case.index[0])
+         case_cellOrder = rank_pseudotime(time_case, "pseudotime")
+         case = reorder_cells(case, case_cellOrder)
+          
          #2. correlation
          case.reset_index(drop=True, inplace=True) 
          if len(case.columns) >= 10000:
@@ -284,7 +495,7 @@ def scTIGER2(outDir, permutations, cellNumber, rawCase, zeroThresh, geneList, al
          corr = pearson_corr(case) 
          
          #3. detect gene interactions
-         interactions = predict_GRN(geneList, corr, topGenes, case, cudaUse, timeDelay)
+         interactions = predict_GRN(geneList, corr, topGenes, case, cudaUse, timeDelay, noValidation)
          allInteractions = pd.concat([allInteractions, interactions], ignore_index=True)
          del(interactions)
          
@@ -299,6 +510,8 @@ def scTIGER2(outDir, permutations, cellNumber, rawCase, zeroThresh, geneList, al
      
      hold = 1
      return hold
+ 
+ 
  
     
 def GRAPH(outDir, geneList, permutations, timeDelay, alpha_val, hold):
@@ -352,3 +565,4 @@ def GRAPH(outDir, geneList, permutations, timeDelay, alpha_val, hold):
      nx.write_graphml(G, fileout)
      
      return sig_ct, sig_ct_avg
+           
