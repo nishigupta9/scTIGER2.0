@@ -136,6 +136,10 @@ If a control dataset is available, it can be input into the program in addition 
   -o SampleResult_ProstateCancer
 ```
 
+Additional sample commands and analysis scenarios can be found [here](./utils/ReadMe.md)
+
+
+
 We have also included an [Example folder](./Example) which allows users to run the example K562 cell line dataset provided to make sure their download of scTIGER2.0 is functioning. To use it, simply download the scTIGER2.0 package, make sure you are working in the scTIGER2.0 directory, change permissions to make the file executable (chmod +x runExample.py) and run ./runExample.py in your terminal. It will output the [SampleResult_K562 directory](./SampleResult_K562) using the provided data from the K562 cell line. The example does not run scTIGER2.0 with CUDA.
 
 This directory contains sample output for scTIGER2.0. The main folder contains the raw counts of gene interactions detected using each entered gene of interest, a .txt file of command details with parameter values, as well as 3 directories. The [sig_gene_networks directory](./SampleResult_K562/sig_gene_networks) contains filtered gene interaction files without background noise, keeping only interactions with enough counts to be deemed significant. The [Graphs directory](./SampleResult_K562/Graphs) contains histograms displaying the number of interactions detected with a percentage recovery as the function of the percent recovery for each gene. The [GRN_Visualization](./SampleResult_K562/GRN_Visualization) directory contains .graphml files for each gene of interest to be opened by a visualization software, such as Cytoscape.
