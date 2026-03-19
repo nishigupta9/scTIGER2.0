@@ -52,38 +52,41 @@ Required flags:
 - -exp/--experimental: Path to the csv file containing the case cells. Provide file with cells as columns and genes as rows. The gene names should be the first column in the file. The file must contain at least 10 cells
 
 Optional Flags:
-- -p/--permutations: Number of permutations to run. Default 100
-- -top/--numTopGenes: Number of top correlated genes selected. Default 50
-- -zero/--zeroThresh: Threshold for number of 0's tolerated for a gene. Default 0.30
-- -t/--timesteps: Maximum number of steps allowed between interactions. 0 implies a direct, causal interaction. 1 implies one interaction between the source and target gene. Default is 0.
-- -s/--start: Starting point for scTIGER. Default 1 (Run scTIGER and and generate GRN files). 2 uses existing scTIGER output to generate GRN visualization files if you'd like to change the alpha level.
-- --cuda: CUDA use on when flag included. Leave flag out if using CPU based discovery
-- -o/--output: Output directory name. Default is 'scTIGER_Output'
-- -a/--alpha: Alpha value for determining significant gene interactions by scTIGER discovery. Default 0.05
-- -od/--override_downsample: Overrides selection of 200 cells. Default is false.
-- -ctrl/--control: Path to the csv file containing control cells. Provide file with cells as columns and genes as rows. The gene names should be the first column in the file. The file must contain at least 10 cells. This flag activates scTIGER instead of scTIGER2.0 to use a co-differential expression network. 
+| Flag | Description | Default | 
+|:----:|:-----------:|:-------:|
+| -p/--permutations | Number of permutations to run | 100| 
+| -top/--numTopGenes | Number of genes with highest correlation to target genes selected | 50 | 
+| -zero/--zeroThresh | Threshold for number of 0 values tolerated for a gene | 0.30 |
+|-t/--timesteps | Maximum number of steps allowed between interactions. 0 implies a direct, causal interaction. 1 implies one interaction between the source and target gene (one degree of separation) | 0 |
+|-s/--start | Starting point for scTIGER. Options are 1 or 2. 1 - Run scTIGER and and generate GRN files. 2 - uses existing scTIGER output to generate GRN visualization files if you'd like to change the alpha level | 1 | 
+| --cuda | Enables CUDA usage (must have installed CUDA capable PyTorch). Leave flag out if using CPU based discovery | OFF/False | 
+| -o/--output | Output directory name | scTIGER_Output | 
+|-a/--alpha | Alpha value for determining significant gene interactions by scTIGER discovery | 0.05 | 
+|-od/--overrideDownsample | Overrides downsample of 200 cells (per permutation, each permutation takes a different set of 200 cells) | OFF/False| 
+|-nV/--noValidation|Disables the time-dependence (causal) validation step after each permutation. This can raise the recall, but drops specificity | OFF/False | 
+| -pt/--pseudotime | Allows user to change which pseudotime method is used. Options are: paga, dpt, palantir, scfates, slingshot, and monocle3. | PAGA| 
+| -ctrl/--control | Path to the csv file containing control cells. Provide file with cells as columns and genes as rows. The gene names should be the first column in the file. The file must contain at least 10 cells. This flag activates scTIGER instead of scTIGER2.0 to use a co-differential expression network. | N/A |
 
 
 Notes: 
 If you choose to input two datasets (case and control), they should either be the same cell type and two different experimental conditions OR the same experimental condition and two different cell types. 
 Sample datasets are provided in the Data folder. There are multiple sample datasets under the Data folder. 
-1. The ProstateCancer folder contains datasets for one patient. The files were processed to contain only one cell type. They are also separated into benign and tumor cells.
-2. The RemoteMemoryFormation folder contains preprocessed datasets. Datasets contain only neurons. Only fear conditioned (FC) and controls were selected for the Chen2 dataset.
-3. The K562 folder contains a filtered dataset from the K562 cell line
+1. The [Prostate Cancer folder](./Sample_Data/ProstateCancer/) contains datasets for one patient. The files were processed to contain only one cell type. They are also separated into benign and tumor cells.
+2. The [Remote Memory Formation folder](./Sample_Data/RemoteMemoryFormation) contains preprocessed datasets. Datasets contain only neurons. Only fear conditioned (FC) and controls were selected for the Chen2 dataset.
+3. The [K562 folder](./Sample_Data/K562) contains a filtered dataset from the K562 cell line.
 
 ### Running
-The main folder of this repository contains three main files:
+The main folder of this repository contains two main files:
 1. run_scTIGER2.py (script to run scTIGER and scTIGER2.0)
 2. scTIGER2.py (definitions and functions used in run_scTIGER2.py)
-3. 10x_preprocess.py (process 10x files into gene expression matrix for scTIGER)
 
 #### Preprocessing
-We included a file (10x_preprocess.py) to convert 10x sequencing files to the gene expression matrix scTIGER2.0 takes in. It has a required flag (-d/--directoryPath) that takes in the path to the directory with the following 10x sequencing output files:
+We included a file [(10x_preprocess.py)](./utils/10x_preprocess.py) to convert 10x sequencing files to the gene expression matrix scTIGER2.0 takes in. It has a required flag (-d/--directoryPath) that takes in the path to the directory with the following 10x sequencing output files:
 - features.tsv.gz
 - barcodes.tsv.gz
 - matrix.mtx.gz
 
-The escript will output the gene expression matrix to input into scTIGER2.0. The command to run this script should be in the following format:
+The script will output the gene expression matrix to input into scTIGER2.0. The command to run this script should be in the following format:
 ```
 ./10x_preprocess.py -d ./Path_to_dir_with_10x_files
 ```
@@ -106,7 +109,9 @@ To run scTIGER2.0 on the sample K562 dataset included in the Sample Data folder,
 
 If a control dataset is available, it can be input into the program in addition to the case matrix to construct a differential expression matrix. For example, to run scTIGER on the sample Prostate Cancer benign (control) and tumor (case) endothelial cells in the Sample Data folder, use the following command:
 ```
-./run_scTIGER2.py -goi AR+PTEN+ERG -ctrl ./Sample_Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Sample_Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 100 -top 50 -zero 0.30 -o SampleResult_ProstateCancer
+./run_scTIGER2.py \
+-goi AR+PTEN+ERG \
+-ctrl ./Sample_Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Sample_Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 100 -top 50 -zero 0.30 -o SampleResult_ProstateCancer
 ```
 
 We have also included an Example folder which allows users to run the example K562 cell line dataset provided to make sure their download of scTIGER2.0 is functioning. To use it, simply download the scTIGER2.0 package, make sure you are working in the scTIGER2.0 directory, change permissions to make the file executable (chmod +x runExample.py) and run ./runExample.py in your terminal. It will output the SampleResult_K562 directory using the provided data from the K562 cell line. The example does not run scTIGER2.0 with CUDA.
