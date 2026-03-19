@@ -150,3 +150,44 @@ scTIGER2.0 outputs .graphml files for each individual gene of interest as well a
 Please cite the corresponding papers if you use scTIGER2 in your work. 
 1. scTIGER   Dautle M, Zhang S, Chen Y. scTIGER: A Deep-Learning Method for Inferring Gene Regulatory Networks from Case versus Control scRNA-seq Datasets. International Journal of Molecular Sciences. 2023; 24(17):13339. [https://doi.org/10.3390/ijms241713339](https://doi.org/10.3390/ijms241713339)
 2. scTIGER2   Gupta N, Dautle M, Zhang S, Chen Y. A Robust Deep Temporal Causal Discovery Platform for Single-Cell Gene Regulatory Network Reconstruction (Under Review)
+
+
+
+## Analysis Scenarios 
+1. Inclusion of the time-dependence (causal) validation step
+   In practice, the choice depends on whether scTIGER2.0 is being used as a discovery tool or a decision-support tool. If your purpose is hypothesis generation or broad exploratory screening, especially if you plan to do additional downstream computational filtering anyways, the causal validation step can be turned off (-nV flag). However, if you plan to perturb a target experimentally and want to know what that will do, it should be left on.
+   ###Example scenario
+   A. Exploratory target discovery from single-cell RNA-seq data
+   Causal Validation : OFF
+   This is the broadest discovery setting. You want to identify genes, pathways, or regulators associated with a phenotype of interest, but you are not yet making strong mechanistic claims. The goal is to cast a wide net and generate a candidate list for later refinement. This can make sense when:
+   - you are analyzing a new dataset
+   - the biology is poorly characterized
+   - sensitivity matters more than specificity
+   - you plan to follow up GRN inference with other methods.
+     Example: You run scTIGER on a diseased vs. healthy cell-state comparison to identify candidate regulators, then pass the top hits into downstream in silico analyses such as protein binding, structural modeling, pathway enrichment, or network prioritization. In this case, turning off causal validation can be reasonable because scTIGER2.0 is functioning as an upstream screening tool rather than the final basis for intervention decisions.
+   B. Early-stage feasibility studies or pilot analyses
+   Causal Validation : OFF
+   When doing a pilot study, the aim is often to see whether the method produces biologically sensible signals at all. You may not want to impose stricter validation criteria until you understand the dataset and parameter sensitivity. This can make sense when:
+  - dataset quality is uncertain
+  - you are benchmarking preprocessing choices
+  - you want to understand how stable the output is across parameter settings
+  - the work is still exploratory
+  Example: You compare runs across different gene sets, filtering thresholds, or cell populations to see whether known regulators appear. In this setting, turning off causal validation helps you learn how the method behaves before moving to more stringent analyses.
+  C. Designing a perturbation experiment
+  Causal Validation : ON
+  This is the clearest case for keeping causal validation enabled. If you are planning to perturb a gene and interpret the downstream effect, you want the model to prioritize candidates with stronger evidence for a causal role rather than mere association. This can make sense when:
+  - you are choosing genes for CRISPR knockout or knockdown
+  - you are designing perturb-seq or follow-up wet-lab experiments
+  - experimental resources are limited
+  - false positives are costly
+  D. Testing a specific mechanistic hypothesis
+  Causal Validation : ON
+  If you already suspect that a target drives a phenotype and want to evaluate whether scTIGER2.0 supports that interpretation, causal validation is important. The analysis is no longer just about finding correlated signals; it is about assessing whether the target is plausibly upstream of the observed effect. This can make sense when: 
+  - you are validating literature-driven hypotheses
+  - you have a small number of candidate regulators
+  - you want mechanistic interpretability
+  - you are writing results that make directional biological claims
+  Example: Prior work suggests that a transcription factor controls a differentiation trajectory. You use scTIGER to test whether perturbing that factor is likely to alter the relevant expression program. Here, causal validation strengthens the biological interpretation.
+
+
+
