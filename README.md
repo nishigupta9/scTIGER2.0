@@ -49,6 +49,7 @@ pip install "numpy<2"
 Required data: One or two scRNA-seq dataset(s) in the format of a non-normalized CSV file with genes in the first column of the file and cells in the remaining columns. 
 Required flags: 
 | Flag | Description | 
+|------|-----|
 |-goi/--geneOfInterest|ne or more genes of interest. Separate multiple genes with a "+" (ex. Arc+Bdnf)|
 |-exp/--experimental| Path to the csv file containing the case cells. Provide file with cells as columns and genes as rows. The gene names should be the first column in the file. The file must contain at least 10 cells|
 
