@@ -155,16 +155,23 @@ Please cite the corresponding papers if you use scTIGER2 in your work.
 
 ## Analysis Scenarios 
 1. Inclusion of the time-dependence (causal) validation step
-   In practice, the choice depends on whether scTIGER2.0 is being used as a discovery tool or a decision-support tool. If your purpose is hypothesis generation or broad exploratory screening, especially if you plan to do additional downstream computational filtering anyways, the causal validation step can be turned off (-nV flag). However, if you plan to perturb a target experimentally and want to know what that will do, it should be left on.
-   ###Example scenario
+
+
+In practice, the choice depends on whether scTIGER2.0 is being used as a discovery tool or a decision-support tool. If your purpose is hypothesis generation or broad exploratory screening, especially if you plan to do additional downstream computational filtering anyways, the causal validation step can be turned off (-nV flag). However, if you plan to perturb a target experimentally and want to know what that will do, it should be left on.
+   ###Example scenarios
    A. Exploratory target discovery from single-cell RNA-seq data
+   
    Causal Validation : OFF
+   
    This is the broadest discovery setting. You want to identify genes, pathways, or regulators associated with a phenotype of interest, but you are not yet making strong mechanistic claims. The goal is to cast a wide net and generate a candidate list for later refinement. This can make sense when:
+  
    - you are analyzing a new dataset
    - the biology is poorly characterized
    - sensitivity matters more than specificity
    - you plan to follow up GRN inference with other methods.
+     
      Example: You run scTIGER on a diseased vs. healthy cell-state comparison to identify candidate regulators, then pass the top hits into downstream in silico analyses such as protein binding, structural modeling, pathway enrichment, or network prioritization. In this case, turning off causal validation can be reasonable because scTIGER2.0 is functioning as an upstream screening tool rather than the final basis for intervention decisions.
+     
    B. Early-stage feasibility studies or pilot analyses
    Causal Validation : OFF
    When doing a pilot study, the aim is often to see whether the method produces biologically sensible signals at all. You may not want to impose stricter validation criteria until you understand the dataset and parameter sensitivity. This can make sense when:
