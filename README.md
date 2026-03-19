@@ -30,6 +30,8 @@ conda install pytorch==2.1.2 torchvision torchaudio cpuonly==2.0 -c pytorch
 conda install -c conda-forge bambi=0.15.0
 conda install -c conda-forge scanpy anndata
 pip install "numpy<2"
+pip3 install leidenalg
+pip3 install igraph
 ```
 
 CUDA capable installation:
@@ -43,6 +45,8 @@ conda install pytorch==2.1.2 torchvision torchaudio pytorch-cuda=11.8 -c pytorch
 conda install -c conda-forge bambi=0.15.0
 conda install -c conda-forge scanpy anndata
 pip install "numpy<2"
+pip3 install leidenalg
+pip3 install igraph
 ```
 
 ## Input
