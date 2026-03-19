@@ -153,48 +153,77 @@ Please cite the corresponding papers if you use scTIGER2 in your work.
 
 
 
-## Analysis Scenarios 
-1. Inclusion of the time-dependence (causal) validation step
+## Analysis Scenarios
 
+### 1. Inclusion of the Time-Dependence (Causal) Validation Step
 
-In practice, the choice depends on whether scTIGER2.0 is being used as a discovery tool or a decision-support tool. If your purpose is hypothesis generation or broad exploratory screening, especially if you plan to do additional downstream computational filtering anyways, the causal validation step can be turned off (-nV flag). However, if you plan to perturb a target experimentally and want to know what that will do, it should be left on.
-   ###Example scenarios
-   A. Exploratory target discovery from single-cell RNA-seq data
-   
-   Causal Validation : OFF
-   
-   This is the broadest discovery setting. You want to identify genes, pathways, or regulators associated with a phenotype of interest, but you are not yet making strong mechanistic claims. The goal is to cast a wide net and generate a candidate list for later refinement. This can make sense when:
-  
-   - you are analyzing a new dataset
-   - the biology is poorly characterized
-   - sensitivity matters more than specificity
-   - you plan to follow up GRN inference with other methods.
-     
-     Example: You run scTIGER on a diseased vs. healthy cell-state comparison to identify candidate regulators, then pass the top hits into downstream in silico analyses such as protein binding, structural modeling, pathway enrichment, or network prioritization. In this case, turning off causal validation can be reasonable because scTIGER2.0 is functioning as an upstream screening tool rather than the final basis for intervention decisions.
-     
-   B. Early-stage feasibility studies or pilot analyses
-   Causal Validation : OFF
-   When doing a pilot study, the aim is often to see whether the method produces biologically sensible signals at all. You may not want to impose stricter validation criteria until you understand the dataset and parameter sensitivity. This can make sense when:
-  - dataset quality is uncertain
-  - you are benchmarking preprocessing choices
-  - you want to understand how stable the output is across parameter settings
-  - the work is still exploratory
-  Example: You compare runs across different gene sets, filtering thresholds, or cell populations to see whether known regulators appear. In this setting, turning off causal validation helps you learn how the method behaves before moving to more stringent analyses.
-  C. Designing a perturbation experiment
-  Causal Validation : ON
-  This is the clearest case for keeping causal validation enabled. If you are planning to perturb a gene and interpret the downstream effect, you want the model to prioritize candidates with stronger evidence for a causal role rather than mere association. This can make sense when:
-  - you are choosing genes for CRISPR knockout or knockdown
-  - you are designing perturb-seq or follow-up wet-lab experiments
-  - experimental resources are limited
-  - false positives are costly
-  D. Testing a specific mechanistic hypothesis
-  Causal Validation : ON
-  If you already suspect that a target drives a phenotype and want to evaluate whether scTIGER2.0 supports that interpretation, causal validation is important. The analysis is no longer just about finding correlated signals; it is about assessing whether the target is plausibly upstream of the observed effect. This can make sense when: 
-  - you are validating literature-driven hypotheses
-  - you have a small number of candidate regulators
-  - you want mechanistic interpretability
-  - you are writing results that make directional biological claims
-  Example: Prior work suggests that a transcription factor controls a differentiation trajectory. You use scTIGER to test whether perturbing that factor is likely to alter the relevant expression program. Here, causal validation strengthens the biological interpretation.
+In practice, the choice depends on whether scTIGER2.0 is being used as a **discovery tool** or a **decision-support tool**.
 
+- If your goal is **hypothesis generation or exploratory screening**, especially with downstream computational filtering, the causal validation step can be turned **off** (`-nV` flag).
+- If your goal is to **perturb a target experimentally and interpret the outcome**, the step should be left **on**.
 
+---
+
+## Example Scenarios
+
+### A. Exploratory Target Discovery from Single-Cell RNA-seq Data  
+**Causal Validation: OFF**
+
+This is the broadest discovery setting. The goal is to identify genes, pathways, or regulators associated with a phenotype without making strong mechanistic claims.
+
+**Use this when:**
+- Analyzing a new dataset  
+- Biology is poorly characterized  
+- Sensitivity matters more than specificity  
+- You plan downstream GRN inference or computational filtering  
+
+**Example:**  
+Run scTIGER on diseased vs. healthy cell states to identify candidate regulators, then evaluate hits using in silico approaches such as protein binding, structural modeling, pathway enrichment, or network prioritization. Here, scTIGER acts as an upstream screening tool.
+
+---
+
+### B. Early-Stage Feasibility Studies or Pilot Analyses  
+**Causal Validation: OFF**
+
+Used to assess whether the method produces biologically meaningful signals before applying stricter criteria.
+
+**Use this when:**
+- Dataset quality is uncertain  
+- Benchmarking preprocessing choices  
+- Evaluating parameter sensitivity  
+- Work is still exploratory  
+
+**Example:**  
+Compare outputs across gene sets, filtering thresholds, or cell populations to check whether known regulators emerge.
+
+---
+
+### C. Designing a Perturbation Experiment  
+**Causal Validation: ON**
+
+Use when results will directly guide experimental intervention.
+
+**Use this when:**
+- Selecting genes for CRISPR knockout/knockdown  
+- Designing perturb-seq experiments  
+- Experimental resources are limited  
+- False positives are costly  
+
+---
+
+### D. Testing a Specific Mechanistic Hypothesis  
+**Causal Validation: ON**
+
+Used to evaluate whether a candidate regulator plausibly drives a phenotype.
+
+**Use this when:**
+- Validating literature-driven hypotheses  
+- Working with a small candidate set  
+- Mechanistic interpretability is important  
+- Making directional biological claims  
+
+**Example:**  
+Test whether a transcription factor implicated in prior studies alters a differentiation trajectory when perturbed.
+
+---
 
