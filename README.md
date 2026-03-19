@@ -115,25 +115,38 @@ The command with optional flags added (in any order) to adjust default parameter
 #### Example 
 To run scTIGER2.0 on the sample K562 dataset included in the Sample Data folder, use the following command:
 ```
-./run_scTIGER2.py -goi JUNB+STAT5B+ATF5+HES1+MXD1 -exp ./Sample_Data/K562/K562.csv -p 100 -top 50 -zero 0.00 -o SampleResult_K562
+./run_scTIGER2.py \
+  -goi JUNB+STAT5B+ATF5+HES1+MXD1 \
+  -exp ./Sample_Data/K562/K562.csv \
+  -p 100 \
+  -top 50 \
+  -zero 0.00 \
+  -o SampleResult_K562
 ```
 
 If a control dataset is available, it can be input into the program in addition to the case matrix to construct a differential expression matrix. For example, to run scTIGER on the sample Prostate Cancer benign (control) and tumor (case) endothelial cells in the Sample Data folder, use the following command:
 ```
 ./run_scTIGER2.py \
--goi AR+PTEN+ERG \
--ctrl ./Sample_Data/ProstateCancer/Patient4_Benign_endothelial.csv -exp ./Sample_Data/ProstateCancer/Patient4_Tumor_endothelial.csv -p 100 -top 50 -zero 0.30 -o SampleResult_ProstateCancer
+  -goi AR+PTEN+ERG \
+  -ctrl ./Sample_Data/ProstateCancer/Patient4_Benign_endothelial.csv \
+  -exp ./Sample_Data/ProstateCancer/Patient4_Tumor_endothelial.csv \
+  -p 100 \
+  -top 50 \
+  -zero 0.30 \
+  -o SampleResult_ProstateCancer
 ```
 
-We have also included an Example folder which allows users to run the example K562 cell line dataset provided to make sure their download of scTIGER2.0 is functioning. To use it, simply download the scTIGER2.0 package, make sure you are working in the scTIGER2.0 directory, change permissions to make the file executable (chmod +x runExample.py) and run ./runExample.py in your terminal. It will output the SampleResult_K562 directory using the provided data from the K562 cell line. The example does not run scTIGER2.0 with CUDA.
+We have also included an [Example folder](./Example) which allows users to run the example K562 cell line dataset provided to make sure their download of scTIGER2.0 is functioning. To use it, simply download the scTIGER2.0 package, make sure you are working in the scTIGER2.0 directory, change permissions to make the file executable (chmod +x runExample.py) and run ./runExample.py in your terminal. It will output the [SampleResult_K562 directory](./SampleResult_K562) using the provided data from the K562 cell line. The example does not run scTIGER2.0 with CUDA.
 
-This directory contains sample output for scTIGER2.0. The main folder contains the raw counts of gene interactions detected using each entered gene of interest, a .txt file of command details with parameter values, as well as 3 directories. The sig_gene_networks directory contains filtered gene interaction files without background noise, keeping only interactions with enough counts to be deemed significant. The Graphs directory contains histograms displaying the number of interactions detected with a percentage recovery as the function of the percent recovery for each gene. The GRN_Visualization directory contains .graphml files for each gene of interest to be opened by a visualization software, such as Cytoscape.
+This directory contains sample output for scTIGER2.0. The main folder contains the raw counts of gene interactions detected using each entered gene of interest, a .txt file of command details with parameter values, as well as 3 directories. The [sig_gene_networks directory](./SampleResult_K562/sig_gene_networks) contains filtered gene interaction files without background noise, keeping only interactions with enough counts to be deemed significant. The [Graphs directory](./SampleResult_K562/Graphs) contains histograms displaying the number of interactions detected with a percentage recovery as the function of the percent recovery for each gene. The [GRN_Visualization](./SampleResult_K562/GRN_Visualization) directory contains .graphml files for each gene of interest to be opened by a visualization software, such as Cytoscape.
 
 ### Visualization
-scTIGER2.0 outputs .graphml files for each individual gene of interest as well as a merged overall interaction map to be uploaded to your visualization software (we used Cytoscape). We included a style file to use in Cytoscape that automatically adds directionality arrows and displays a T at the end of the arrow for downregulated interactions and an arrow for upregulated interactions. 
+scTIGER2.0 outputs .graphml files for each individual gene of interest as well as a merged overall interaction map to be uploaded to your visualization software (we used Cytoscape). We included a [Cytoscape style file](./utils/scTIGER2.0_CytoscapeStyle.json) to use in Cytoscape that automatically adds directionality arrows and displays a T at the end of the arrow for downregulated interactions and an arrow for upregulated interactions. 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/137c656b-4322-4e51-a645-782fe7f9f0c1" alt="My image" width="600" height="400"/>
 </p>
 
 ### Citation
-Corresponding paper for scTIGER: Dautle M, Zhang S, Chen Y. scTIGER: A Deep-Learning Method for Inferring Gene Regulatory Networks from Case versus Control scRNA-seq Datasets. International Journal of Molecular Sciences. 2023; 24(17):13339. https://doi.org/10.3390/ijms241713339
+Corresponding papers 
+1. scTIGER   Dautle M, Zhang S, Chen Y. scTIGER: A Deep-Learning Method for Inferring Gene Regulatory Networks from Case versus Control scRNA-seq Datasets. International Journal of Molecular Sciences. 2023; 24(17):13339. [https://doi.org/10.3390/ijms241713339](https://doi.org/10.3390/ijms241713339)
+2. scTIGER2   Gupta N, Dautle M, Zhang S, Chen Y. A Robust Deep Temporal Causal Discovery Platform for Single-Cell Gene Regulatory Network Reconstruction (Under Review)
