@@ -45,7 +45,7 @@ conda install -c conda-forge scanpy anndata
 pip install "numpy<2"
 ```
 
-### Input
+## Input
 Required data: One or two scRNA-seq dataset(s) in the format of a non-normalized CSV file with genes in the first column of the file and cells in the remaining columns. 
 Required flags: 
 | Flag | Description | 
@@ -76,12 +76,12 @@ Sample datasets are provided in the Data folder. There are multiple sample datas
 2. The [Remote Memory Formation folder](./Sample_Data/RemoteMemoryFormation) contains preprocessed datasets. Datasets contain only neurons. Only fear conditioned (FC) and controls were selected for the Chen2 dataset.
 3. The [K562 folder](./Sample_Data/K562) contains a filtered dataset from the K562 cell line.
 
-### Running
+## Running
 The main folder of this repository contains two main files:
 1. run_scTIGER2.py (script to run scTIGER and scTIGER2.0)
 2. scTIGER2.py (definitions and functions used in run_scTIGER2.py)
 
-#### Preprocessing
+### Preprocessing
 We included a file [(10x_preprocess.py)](./utils/10x_preprocess.py) to convert 10x sequencing files to the gene expression matrix scTIGER2.0 takes in. It has a required flag (-d/--directoryPath) that takes in the path to the directory with the following 10x sequencing output files:
 - features.tsv.gz
 - barcodes.tsv.gz
@@ -92,7 +92,7 @@ The script will output the gene expression matrix to input into scTIGER2.0. The 
 ./10x_preprocess.py -d ./Path_to_dir_with_10x_files
 ```
 
-#### scTIGER2.0 
+### scTIGER2.0 
 scTIGER2.0 is set up as a single-line command using the flags defined in the input section of this page. If you are using one gene expression matrix, make sure to put the file path after the -exp flag and not the -ctrl flag. The command with required flags should be in the following format:
 ```
 ./run_scTIGER2.py -goi Gene1+Gene2+Gene3 -exp ./path_to_file
@@ -112,7 +112,7 @@ The command with optional flags added (in any order) to adjust default parameter
   -s 2
 ```
 
-#### Example 
+## Example 
 To run scTIGER2.0 on the sample K562 dataset included in the Sample Data folder, use the following command:
 ```
 ./run_scTIGER2.py \
@@ -138,19 +138,18 @@ If a control dataset is available, it can be input into the program in addition 
 
 Additional sample commands and analysis scenarios can be found [here](./utils/ReadMe.md)
 
-
-
+### Example Output
 We have also included an [Example folder](./Example) which allows users to run the example K562 cell line dataset provided to make sure their download of scTIGER2.0 is functioning. To use it, simply download the scTIGER2.0 package, make sure you are working in the scTIGER2.0 directory, change permissions to make the file executable (chmod +x runExample.py) and run ./runExample.py in your terminal. It will output the [SampleResult_K562 directory](./SampleResult_K562) using the provided data from the K562 cell line. The example does not run scTIGER2.0 with CUDA.
 
 This directory contains sample output for scTIGER2.0. The main folder contains the raw counts of gene interactions detected using each entered gene of interest, a .txt file of command details with parameter values, as well as 3 directories. The [sig_gene_networks directory](./SampleResult_K562/sig_gene_networks) contains filtered gene interaction files without background noise, keeping only interactions with enough counts to be deemed significant. The [Graphs directory](./SampleResult_K562/Graphs) contains histograms displaying the number of interactions detected with a percentage recovery as the function of the percent recovery for each gene. The [GRN_Visualization](./SampleResult_K562/GRN_Visualization) directory contains .graphml files for each gene of interest to be opened by a visualization software, such as Cytoscape.
 
-### Visualization
+## Visualization
 scTIGER2.0 outputs .graphml files for each individual gene of interest as well as a merged overall interaction map to be uploaded to your visualization software (we used Cytoscape). We included a [Cytoscape style file](./utils/scTIGER2.0_CytoscapeStyle.json) to use in Cytoscape that automatically adds directionality arrows and displays a T at the end of the arrow for downregulated interactions and an arrow for upregulated interactions. 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/137c656b-4322-4e51-a645-782fe7f9f0c1" alt="My image" width="600" height="400"/>
 </p>
 
-### Citations
+## Citations
 Please cite the corresponding papers if you use scTIGER2 in your work. 
 1. scTIGER   Dautle M, Zhang S, Chen Y. scTIGER: A Deep-Learning Method for Inferring Gene Regulatory Networks from Case versus Control scRNA-seq Datasets. International Journal of Molecular Sciences. 2023; 24(17):13339. [https://doi.org/10.3390/ijms241713339](https://doi.org/10.3390/ijms241713339)
 2. scTIGER2   Gupta N, Dautle M, Zhang S, Chen Y. A Robust Deep Temporal Causal Discovery Platform for Single-Cell Gene Regulatory Network Reconstruction (Under Review)
