@@ -48,12 +48,13 @@ pip install "numpy<2"
 ### Input
 Required data: One or two scRNA-seq dataset(s) in the format of a non-normalized CSV file with genes in the first column of the file and cells in the remaining columns. 
 Required flags: 
-- -goi/--geneOfInterest: One or more genes of interest. Separate multiple genes with a "+" (ex. Arc+Bdnf)
-- -exp/--experimental: Path to the csv file containing the case cells. Provide file with cells as columns and genes as rows. The gene names should be the first column in the file. The file must contain at least 10 cells
+| Flag | Description | 
+|-goi/--geneOfInterest|ne or more genes of interest. Separate multiple genes with a "+" (ex. Arc+Bdnf)|
+|-exp/--experimental| Path to the csv file containing the case cells. Provide file with cells as columns and genes as rows. The gene names should be the first column in the file. The file must contain at least 10 cells|
 
 Optional Flags:
 | Flag | Description | Default | 
-|:----:|:-----------:|:-------:|
+|-----:|:------------|:-------:|
 | -p/--permutations | Number of permutations to run | 100| 
 | -top/--numTopGenes | Number of genes with highest correlation to target genes selected | 50 | 
 | -zero/--zeroThresh | Threshold for number of 0 values tolerated for a gene | 0.30 |
@@ -98,7 +99,17 @@ scTIGER2.0 is set up as a single-line command using the flags defined in the inp
 ```
 The command with optional flags added (in any order) to adjust default parameters should be in the following format:
 ```
-./run_scTIGER2.py -goi Gene1+Gene2+Gene3 -ctrl ./path_to_file -exp ./path_to_file -p 50 -top 90 -zero 0.20 -t 1 --cuda -o NameOfDirectory_Output -s 2
+./run_scTIGER2.py
+  -goi Gene1+Gene2+Gene3
+  -ctrl ./path_to_file
+  -exp ./path_to_file
+  -p 50
+  -top 90
+  -zero 0.20
+  -t 1
+  --cuda
+  -o NameOfDirectory_Output
+  -s 2
 ```
 
 #### Example 
