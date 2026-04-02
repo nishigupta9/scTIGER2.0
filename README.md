@@ -38,7 +38,7 @@ CUDA capable installation:
 ```
 conda create -n scTIGER2.0 python=3.11
 conda activate scTIGER2.0
-git clone https://github.com/chenyongrowan/scTIGER2.0
+git clone https://github.com/nishigupta9/scTIGER2.0.git
 cd scTIGER2.0
 chmod +x run_scTIGER2.py
 conda install pytorch==2.1.2 torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
